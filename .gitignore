@@ -1,0 +1,38 @@
+# Built artifacts
+*.apk
+*.aar
+*.ap_
+*.dex
+/build
+/captures
+*.hprof
+
+# IDE - IntelliJ / Android Studio
+*.iml
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/.idea/shelf
+/.idea/codeStyles
+/.idea/dictionaries
+
+# Gradle
+.gradle
+/local.properties
+secrets.properties
+
+# External Native Build
+.externalNativeBuild
+.cxx
+
+# Signing files
+*.jks
+*.keystore
+*.p12
+*.key
+
+# OS
+.DS_Store
