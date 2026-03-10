@@ -17,6 +17,7 @@
 package com.example.unfriendlyfitnessapp
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -39,6 +40,9 @@ sealed class Screen {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Disable Window Adjustment: prevents the window from resizing or panning when the keyboard opens.
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
         setContent {
             UnfriendlyFitnessAppTheme(dynamicColor = true) {

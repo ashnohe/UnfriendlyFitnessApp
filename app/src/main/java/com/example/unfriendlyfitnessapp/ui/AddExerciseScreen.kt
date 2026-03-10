@@ -19,9 +19,8 @@ package com.example.unfriendlyfitnessapp.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -109,48 +108,51 @@ fun AddExerciseScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
+            .padding(bottom = 100.dp)
     ) {
-        TopAppBar(
-            title = { Text(if (existingRecord != null) "Edit Exercise" else "Add Exercise") },
-            navigationIcon = {
-                IconButton(onClick = { }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                }
-            },
-            actions = {
-                Button(
-                    onClick = {
-                        if (allExerciseNames.contains(selectedExercise) && effectiveWorkoutId != null) {
-                            val setsData = exerciseSets.mapNotNull { (w, r) ->
-                                val weightVal = w.toDoubleOrNull()
-                                val repsVal = r.toIntOrNull()
-                                if (weightVal != null && repsVal != null) {
-                                    weightVal to repsVal
-                                } else null
-                            }
-                            if (setsData.isNotEmpty()) {
-                                viewModel.saveExerciseSets(effectiveWorkoutId, selectedExercise, setsData)
-                                onBack()
-                            }
-                        }
-                    },
-                    modifier = Modifier.padding(end = 8.dp)
-                ) {
-                    Text("Save")
-                }
-            }
-        )
-
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            item {
+            TopAppBar(
+                title = { Text(if (existingRecord != null) "Edit Exercise" else "Add Exercise") },
+                navigationIcon = {
+                    IconButton(onClick = { }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    Button(
+                        onClick = {
+                            if (allExerciseNames.contains(selectedExercise) && effectiveWorkoutId != null) {
+                                val setsData = exerciseSets.mapNotNull { (w, r) ->
+                                    val weightVal = w.toDoubleOrNull()
+                                    val repsVal = r.toIntOrNull()
+                                    if (weightVal != null && repsVal != null) {
+                                        weightVal to repsVal
+                                    } else null
+                                }
+                                if (setsData.isNotEmpty()) {
+                                    viewModel.saveExerciseSets(effectiveWorkoutId, selectedExercise, setsData)
+                                    onBack()
+                                }
+                            }
+                        },
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Text("Save")
+                    }
+                }
+            )
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded },
@@ -183,9 +185,7 @@ fun AddExerciseScreen(
                         }
                     }
                 }
-            }
 
-            item {
                 if (allExerciseNames.contains(selectedExercise)) {
                     TextButton(
                         onClick = {
@@ -199,65 +199,63 @@ fun AddExerciseScreen(
                         Text("Previous Performances")
                     }
                 }
-            }
 
-            itemsIndexed(exerciseSets) { index, set ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text("Set ${index + 1}", modifier = Modifier.width(48.dp))
-                    OutlinedTextField(
-                        value = set.first,
-                        onValueChange = { newWeight ->
-                            if (newWeight.isEmpty() || newWeight.toDoubleOrNull() != null || newWeight.endsWith(".")) {
-                                val newList = exerciseSets.toMutableList()
-                                newList[index] = newWeight to set.second
-                                exerciseSets = newList
-                            }
-                        },
-                        label = { Text("Weight (lbs)") },
-                        modifier = Modifier.weight(1.2f),
-                        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal),
-                        singleLine = true
-                    )
-                    OutlinedTextField(
-                        value = set.second,
-                        onValueChange = { newReps ->
-                            if (newReps.isEmpty() || newReps.toIntOrNull() != null) {
-                                val newList = exerciseSets.toMutableList()
-                                newList[index] = set.first to newReps
-                                exerciseSets = newList
-                            }
-                        },
-                        label = { Text("Reps") },
-                        modifier = Modifier.weight(1f),
-                        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
-                        singleLine = true
-                    )
-                    if (exerciseSets.size > 1) {
-                        IconButton(
-                            onClick = {
-                                val newList = exerciseSets.toMutableList()
-                                newList.removeAt(index)
-                                exerciseSets = newList
+                exerciseSets.forEachIndexed { index, set ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("Set ${index + 1}", modifier = Modifier.width(48.dp))
+                        OutlinedTextField(
+                            value = set.first,
+                            onValueChange = { newWeight ->
+                                if (newWeight.isEmpty() || newWeight.toDoubleOrNull() != null || newWeight.endsWith(".")) {
+                                    val newList = exerciseSets.toMutableList()
+                                    newList[index] = newWeight to set.second
+                                    exerciseSets = newList
+                                }
                             },
-                            modifier = Modifier.size(48.dp)
-                        ) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = "Remove Set",
-                                tint = MaterialTheme.colorScheme.error
-                            )
+                            label = { Text("Weight (lbs)") },
+                            modifier = Modifier.weight(1.2f),
+                            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal),
+                            singleLine = true
+                        )
+                        OutlinedTextField(
+                            value = set.second,
+                            onValueChange = { newReps ->
+                                if (newReps.isEmpty() || newReps.toIntOrNull() != null) {
+                                    val newList = exerciseSets.toMutableList()
+                                    newList[index] = set.first to newReps
+                                    exerciseSets = newList
+                                }
+                            },
+                            label = { Text("Reps") },
+                            modifier = Modifier.weight(1f),
+                            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
+                            singleLine = true
+                        )
+                        if (exerciseSets.size > 1) {
+                            IconButton(
+                                onClick = {
+                                    val newList = exerciseSets.toMutableList()
+                                    newList.removeAt(index)
+                                    exerciseSets = newList
+                                },
+                                modifier = Modifier.size(48.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    contentDescription = "Remove Set",
+                                    tint = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        } else {
+                            Spacer(modifier = Modifier.size(48.dp))
                         }
-                    } else {
-                        Spacer(modifier = Modifier.size(48.dp))
                     }
                 }
-            }
 
-            item {
                 OutlinedButton(
                     onClick = {
                         val lastSet = exerciseSets.lastOrNull()
@@ -269,9 +267,7 @@ fun AddExerciseScreen(
                     Spacer(Modifier.width(8.dp))
                     Text("Add Set")
                 }
-            }
 
-            item {
                 Spacer(Modifier.height(32.dp))
             }
         }
@@ -280,26 +276,23 @@ fun AddExerciseScreen(
     if (showBottomSheet) {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
         ModalBottomSheet(
-            onDismissRequest = { },
+            onDismissRequest = { showBottomSheet = false },
             sheetState = sheetState,
             modifier = Modifier.fillMaxSize(),
-            contentWindowInsets = { WindowInsets(0.dp) }
         ) {
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .padding(16.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                item {
-                    Text("Previous Performances", style = MaterialTheme.typography.headlineSmall)
-                }
+                Text("Previous Performances", style = MaterialTheme.typography.headlineSmall)
+                
                 if (lastPerformances.isEmpty()) {
-                    item {
-                        Text("No previous data found for this exercise.")
-                    }
+                    Text("No previous data found for this exercise.")
                 } else {
-                    items(lastPerformances) { performance ->
+                    lastPerformances.forEach { performance ->
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(
@@ -325,9 +318,7 @@ fun AddExerciseScreen(
                         }
                     }
                 }
-                item {
-                    Spacer(Modifier.height(48.dp))
-                }
+                Spacer(Modifier.height(48.dp))
             }
         }
     }
