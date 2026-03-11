@@ -17,7 +17,6 @@
 package com.example.unfriendlyfitnessapp.ui
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -31,15 +30,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.unfriendlyfitnessapp.data.WorkoutRecord
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,31 +74,10 @@ fun AddExerciseScreen(
     }
 
     if (showDiscardDialog) {
-        Dialog(
-            onDismissRequest = { },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(24.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Discard Changes?", color = MaterialTheme.colorScheme.onSurface, fontSize = 20.sp)
-                    Spacer(Modifier.height(16.dp))
-                    Row {
-                        TextButton(onClick = { }) {
-                            Text("No")
-                        }
-                        TextButton(onClick = { onBack() }) {
-                            Text("Yes")
-                        }
-                    }
-                }
-            }
-        }
+        DiscardChangesDialog(
+            onConfirm = { onBack() },
+            onDismiss = { showDiscardDialog = false }
+        )
     }
 
     Box(
@@ -274,52 +246,9 @@ fun AddExerciseScreen(
     }
 
     if (showBottomSheet) {
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
-        ModalBottomSheet(
-            onDismissRequest = { showBottomSheet = false },
-            sheetState = sheetState,
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text("Previous Performances", style = MaterialTheme.typography.headlineSmall)
-                
-                if (lastPerformances.isEmpty()) {
-                    Text("No previous data found for this exercise.")
-                } else {
-                    lastPerformances.forEach { performance ->
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                            )
-                        ) {
-                            Column(modifier = Modifier.padding(12.dp)) {
-                                val dateStr = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-                                    .format(Date(performance.first().timestamp))
-                                Text(
-                                    dateStr,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                Spacer(Modifier.height(4.dp))
-                                performance.sortedBy { it.setNumber }.forEach { record ->
-                                    Text(
-                                        "Set ${record.setNumber}: ${record.reps} reps @ ${record.weight} lbs",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-                Spacer(Modifier.height(48.dp))
-            }
-        }
+        PreviousPerformancesBottomSheet(
+            lastPerformances = lastPerformances,
+            onDismissRequest = { showBottomSheet = false }
+        )
     }
 }
