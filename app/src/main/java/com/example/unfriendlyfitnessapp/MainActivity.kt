@@ -35,9 +35,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import com.example.unfriendlyfitnessapp.data.WorkoutRecord
-import com.example.unfriendlyfitnessapp.ui.AddExerciseScreen
+import com.example.unfriendlyfitnessapp.ui.addexercise.AddExerciseScreen
 import com.example.unfriendlyfitnessapp.ui.StatsScreen
-import com.example.unfriendlyfitnessapp.ui.WorkoutListScreen
+import com.example.unfriendlyfitnessapp.ui.workoutlist.WorkoutListScreen
 import com.example.unfriendlyfitnessapp.ui.theme.UnfriendlyFitnessAppTheme
 
 /**

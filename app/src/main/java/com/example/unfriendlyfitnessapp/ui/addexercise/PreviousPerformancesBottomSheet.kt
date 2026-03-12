@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.unfriendlyfitnessapp.ui
+package com.example.unfriendlyfitnessapp.ui.addexercise
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
