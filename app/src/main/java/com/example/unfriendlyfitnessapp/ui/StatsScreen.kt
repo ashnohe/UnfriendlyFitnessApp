@@ -30,6 +30,7 @@ fun StatsScreen() {
         Surface(
             color = MaterialTheme.colors.primary,
         ) {
+            // You MUST use material TopAppBar for this screen. DO NOT use M3.
             TopAppBar(
                 title = {
                     Text(text = "Workout Stats")
