@@ -88,5 +88,5 @@ fun WorkoutListPane(
         ) {
             Icon(Icons.Default.Add, contentDescription = "Add Workout")
         }
-    }
-}
+    } // end Box
+} // end Screen
