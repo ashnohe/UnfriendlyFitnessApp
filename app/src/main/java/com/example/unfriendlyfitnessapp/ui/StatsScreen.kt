@@ -18,8 +18,10 @@ package com.example.unfriendlyfitnessapp.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material3.MaterialTheme as MaterialTheme3
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 /**
  * Placeholder screen for Workout Stats.
@@ -27,15 +29,14 @@ import androidx.compose.ui.Modifier
 @Composable
 fun StatsScreen() {
     Column(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            color = MaterialTheme.colors.primary,
-        ) {
-            // You MUST use material TopAppBar for this screen. DO NOT use M3.
-            TopAppBar(
-                title = {
-                    Text(text = "Workout Stats")
-                },
-            )
-        }
+        // You MUST use material TopAppBar for this screen. DO NOT use M3.
+        TopAppBar(
+            backgroundColor = MaterialTheme3.colorScheme.background,
+            contentColor = MaterialTheme3.colorScheme.onBackground,
+            elevation = 0.dp,
+            title = {
+                Text(text = "Workout Stats")
+            },
+        )
     }
 }
