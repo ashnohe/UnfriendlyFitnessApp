@@ -27,26 +27,47 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 
-data class UglyChecklistItem(
-    val title: String,
-    val isDone: Boolean
+data class UglyNewsArticle(
+    val id: String,
+    val headline: String,
+    val summary: String,
+    val timeAgo: String
 )
 
 class MyWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val items = listOf(
-            UglyChecklistItem("DO 100 BURPEES RIGHT NOW!!", false),
-            UglyChecklistItem("DRINK 5 GALLONS OF WATER", true),
-            UglyChecklistItem("RUN 50 MILES NO REST", false),
-            UglyChecklistItem("EAT BROCCOLI ONLY", false),
-            UglyChecklistItem("LIFT 500 LBS BENCH PRESS", true)
+        val articles = listOf(
+            UglyNewsArticle(
+                id = "1",
+                headline = "🚨 BURPEES OFFICIALLY BANNED WORLDWIDE!!",
+                summary = "Scientists declare exercise causes extreme soreness & regret.",
+                timeAgo = "2 MINS AGO"
+            ),
+            UglyNewsArticle(
+                id = "2",
+                headline = "🥑 NEW DIET: ICE CUBES & DUST ONLY",
+                summary = "Guaranteed 50lb weight loss in under 30 minutes.",
+                timeAgo = "15 MINS AGO"
+            ),
+            UglyNewsArticle(
+                id = "3",
+                headline = "🚌 LOCAL MAN BENCHES ENTIRE CITY BUS",
+                summary = "Passersby reportedly stunned and completely confused.",
+                timeAgo = "1 HOUR AGO"
+            ),
+            UglyNewsArticle(
+                id = "4",
+                headline = "😴 GYM CLOSED PERMANENTLY FOR NAP TIME",
+                summary = "Management states all members are simply too tired to lift.",
+                timeAgo = "3 HOURS AGO"
+            )
         )
 
         provideContent {
             GlanceTheme {
-                UglyChecklistWidgetContent(items = items)
+                UglyNewsWidgetContent(articles = articles)
             }
         }
     }
@@ -57,34 +78,34 @@ class MyWidgetReceiver : GlanceAppWidgetReceiver() {
 }
 
 @Composable
-fun UglyChecklistWidgetContent(items: List<UglyChecklistItem>) {
+fun UglyNewsWidgetContent(articles: List<UglyNewsArticle>) {
     Box(
         modifier = GlanceModifier
             .fillMaxSize()
-            .background(ColorProvider(Color(0xFFFFFF00), Color(0xFFFFFF00)))
+            .background(ColorProvider(Color(0xFF8A2BE2), Color(0xFF8A2BE2))) // Electric Purple
             .padding(4.dp)
     ) {
         Column(
             modifier = GlanceModifier.fillMaxSize()
         ) {
             Text(
-                text = "⚠️ UGLY CHECKLIST ⚠️",
+                text = "💥 FITNESS NEWS FLASH 💥",
                 style = TextStyle(
-                    color = ColorProvider(Color(0xFFFF0000), Color(0xFFFF0000)),
+                    color = ColorProvider(Color(0xFFFFFF00), Color(0xFFFFFF00)), // Bright Yellow
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 ),
                 modifier = GlanceModifier
                     .fillMaxWidth()
-                    .background(ColorProvider(Color(0xFF00FFFF), Color(0xFF00FFFF)))
+                    .background(ColorProvider(Color(0xFFFF4500), Color(0xFFFF4500))) // Bright Orange
                     .padding(8.dp)
             )
 
             LazyColumn(
                 modifier = GlanceModifier.fillMaxSize()
             ) {
-                items(items) { item ->
-                    UglyRowItem(item)
+                items(articles) { article ->
+                    UglyNewsArticleRow(article)
                 }
             }
         }
@@ -92,33 +113,43 @@ fun UglyChecklistWidgetContent(items: List<UglyChecklistItem>) {
 }
 
 @Composable
-fun UglyRowItem(item: UglyChecklistItem) {
-    Row(
+fun UglyNewsArticleRow(article: UglyNewsArticle) {
+    Column(
         modifier = GlanceModifier
             .fillMaxWidth()
-            .background(
-                if (item.isDone) ColorProvider(Color(0xFFFF00FF), Color(0xFFFF00FF))
-                else ColorProvider(Color(0xFF00FF00), Color(0xFF00FF00))
-            )
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .background(ColorProvider(Color(0xFF00FF00), Color(0xFF00FF00))) // Bright Lime Green
+            .padding(8.dp)
     ) {
-        Text(
-            text = if (item.isDone) " [X] " else " [ ] ",
-            style = TextStyle(
-                color = ColorProvider(Color(0xFF000000), Color(0xFF000000)),
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+        Row(
+            modifier = GlanceModifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = article.headline,
+                style = TextStyle(
+                    color = ColorProvider(Color(0xFFFF0000), Color(0xFFFF0000)), // Bright Red
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp
+                ),
+                modifier = GlanceModifier.defaultWeight()
             )
-        )
+            Text(
+                text = article.timeAgo,
+                style = TextStyle(
+                    color = ColorProvider(Color(0xFF000000), Color(0xFF000000)),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp
+                )
+            )
+        }
 
         Text(
-            text = item.title,
+            text = article.summary,
             style = TextStyle(
-                color = ColorProvider(Color(0xFF0000FF), Color(0xFF0000FF)),
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
+                color = ColorProvider(Color(0xFF0000FF), Color(0xFF0000FF)), // Bright Blue
+                fontSize = 12.sp
+            ),
+            modifier = GlanceModifier.padding(top = 4.dp)
         )
     }
 }
